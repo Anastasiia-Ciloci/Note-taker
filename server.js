@@ -26,63 +26,58 @@ app.get("/", (req, res) => {
   console.log("return index.html");
   res.sendFile(path.join(__dirname, "/public", "index.html"));
 });
+
 //return all notes
 app.get("/api/notes", (req, res) => {
   console.log("return notes as json");
   fs.readFile("./db/db.json", "utf-8", function (err, data) {
-    //console.log("data", JSON.parse(data));
     res.send(JSON.parse(data));
   });
 });
 
 //POST. add new notes to the array
 app.post("/api/notes", (req, res) => {
-  console.log(req.body);
-
   if (req.body) {
     const newNote = {
       id: uuid(),
       title: req.body.title,
       text: req.body.text,
     };
-    console.log(newNote);
-    readAndAppend(newNote, "./db/db.json");
+
+    updatedNotesDB(addNote, newNote);
+    res.send("add successful");
   }
 });
 
-const writeToFile = (destination, content) =>
-  fs.writeFile(destination, JSON.stringify(content, null, 4), (err) =>
-    err ? console.error(err) : console.info(`\nData written to ${destination}`)
-  );
-const readAndAppend = (content, file) => {
-  fs.readFile(file, "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-    } else {
-      const parsedData = JSON.parse(data);
-      parsedData.push(content);
-      writeToFile(file, parsedData);
-    }
-  });
-};
 //delete notes
 app.delete("/api/notes/:id", (req, res) => {
   console.log("DELETE note with id: " + req.params.id);
-  updateNotesDb();
+  updatedNotesDB(removeNote, req.params.id);
+  res.send("delete successful");
 });
 
-const updateNotesDb = () => {
+function addNote(noteList, note) {
+  noteList.push(note);
+}
+
+function removeNote(noteList, noteId) {
+  for (var i = 0; i < noteList.length; i++) {
+    if (noteList[i].id === noteId) {
+      noteList.splice(i, 1);
+      return;
+    }
+  }
+}
+
+const updatedNotesDB = (updateDataFunc, param) => {
   const data = fs.readFileSync("./db/db.json");
   const noteList = JSON.parse(data);
 
-  let updatedNoteList = noteList.filter((note) => {
-    return note.id !== req.params.id;
-  });
+  updateDataFunc(noteList, param);
 
-  fs.writeFileSync("./db/db.json", JSON.stringify(updatedNoteList));
-  res.send("delete successful");
+  fs.writeFileSync("./db/db.json", JSON.stringify(noteList));
+  //res.send("delete successful");
 };
-
 //port
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`);
