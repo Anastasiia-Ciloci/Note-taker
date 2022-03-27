@@ -15,7 +15,7 @@ Or click [here](https://enigmatic-cove-91750.herokuapp.com/) to open a note take
 
 ## Visuals
 
-![Screenshot of note taker](./public/assets/images/)
+![Screenshot of note taker](./public/assets/images/2022-03-27_19-12-47.png)
 
 ## Questions
 
