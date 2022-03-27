@@ -9,6 +9,8 @@
 
 # Description
 
+A Note Taker application that can be used to write and save notes. This application uses an Express.js back end and saves and retrieves note data from a JSON file.
+
 # A link to the [Note Taker](https://anastasiia-ciloci.github.io/Day-planner/)
 
 Or click [here](https://enigmatic-cove-91750.herokuapp.com/) to open a note taker.
